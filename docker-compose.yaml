@@ -1,0 +1,53 @@
+services:
+  postgresDB:
+    image: postgres:17.2
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: testtaskDB
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+  elasticsearch:
+    image: elasticsearch:8.18.0
+    restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms256m -Xmx1024m
+      - xpack.security.enabled=false
+      - TZ=Europe/Moscow
+      - cluster.name=by-artur
+      - node.name=by-artur-test
+      - action.destructive_requires_name=false
+    healthcheck:
+      test: curl -u --fail -s http://elasticsearch:9200 || exit 1
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  testtask:
+    image: testtask:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    depends_on:
+      postgresDB:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
