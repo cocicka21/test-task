@@ -22,24 +22,30 @@ import java.util.Set;
 public class User extends BasicEntity {
 
     @Column(name = "name", nullable = false, length = 500, columnDefinition = "VARCHAR(500)")
+    @ToString.Include
     private String name;
 
     @Column(name = "date_of_birth", columnDefinition = "DATE")
+    @ToString.Include
     private LocalDate dateOfBirth;
 
     @Column(name = "password", nullable = false, length = 500, columnDefinition = "VARCHAR(500)")
     @NotBlank
     @Size(min = 8, max = 500)
+    @ToString.Include
     private String password;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Include
     private Account account;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @BatchSize(size = 10)
+    @ToString.Include
     private Set<EmailData> emails = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @BatchSize(size = 10)
+    @ToString.Include
     private Set<PhoneData> phones = new HashSet<>();
 }

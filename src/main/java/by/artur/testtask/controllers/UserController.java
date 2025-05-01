@@ -2,10 +2,9 @@ package by.artur.testtask.controllers;
 
 import by.artur.testtask.dtos.EmailDataDto;
 import by.artur.testtask.dtos.PhoneDataDto;
-import by.artur.testtask.dtos.UserDTO;
+import by.artur.testtask.dtos.UserDto;
 import by.artur.testtask.entities.EmailLog;
 import by.artur.testtask.entities.PhoneLog;
-import by.artur.testtask.entities.User;
 import by.artur.testtask.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<UserDTO>>> searchUsers(@RequestParam(value = "name", required = false) String name,
+    public ResponseEntity<PagedModel<EntityModel<UserDto>>> searchUsers(@RequestParam(value = "name", required = false) String name,
                                                                         @RequestParam(value = "email", required = false) String email,
                                                                         @RequestParam(value = "phone", required = false) String phone,
                                                                         @RequestParam(value = "dateOfBirth", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
@@ -68,13 +67,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") Long userId) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> getMe(){
-        return ResponseEntity.ok(userService.findUserById(userService.getUser()));
+    public ResponseEntity<UserDto> getMe(){
+        return ResponseEntity.ok(userService.getUserById(userService.getUser()));
     }
 
     @GetMapping("/phones/history")

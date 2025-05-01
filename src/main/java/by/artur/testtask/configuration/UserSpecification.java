@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserSpecification {
+
     public static Specification<User> withFilters(String name, String phone, String email, LocalDate dateOfBirth) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();

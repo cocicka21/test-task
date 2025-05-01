@@ -16,7 +16,7 @@ import lombok.*;
 @Table(name = "email_data")
 public class EmailData extends BasicEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     private User user;

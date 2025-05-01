@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Table(name = "accounts")
 public class Account extends BasicEntity {
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private User user;

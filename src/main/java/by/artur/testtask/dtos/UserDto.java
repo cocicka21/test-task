@@ -10,11 +10,12 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class UserDto {
 
     Long id;
     String name;
     LocalDate dateOfBirth;
+    AccountDto account;
     Set<EmailDataDto> emails;
     Set<PhoneDataDto> phones;
 }

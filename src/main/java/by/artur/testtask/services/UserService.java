@@ -1,9 +1,10 @@
 package by.artur.testtask.services;
 
 import by.artur.testtask.configuration.UserSpecification;
+import by.artur.testtask.dtos.AccountDto;
 import by.artur.testtask.dtos.EmailDataDto;
 import by.artur.testtask.dtos.PhoneDataDto;
-import by.artur.testtask.dtos.UserDTO;
+import by.artur.testtask.dtos.UserDto;
 import by.artur.testtask.entities.*;
 import by.artur.testtask.exceptions.EmailException;
 import by.artur.testtask.repositories.UserRepository;
@@ -37,7 +38,7 @@ public class UserService {
     private final PhoneService phoneService;
     private final ElasticsearchService elasticsearchService;
     private final ModelMapper modelMapper;
-    private final PagedResourcesAssembler<UserDTO> pagedResourcesAssembler;
+    private final PagedResourcesAssembler<UserDto> pagedResourcesAssembler;
 
     public EmailDataDto addEmail(String email) throws IOException {
         Long userId = getUser();
@@ -89,8 +90,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserDTO getUserById(Long userId) {
-        return modelMapper.map(findUserById(userId), UserDTO.class);
+    public UserDto getUserById(Long userId) {
+        return modelMapper.map(findUserById(userId), UserDto.class);
     }
 
     public User findUserById(Long userId) {
@@ -104,16 +105,17 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public PagedModel<EntityModel<UserDTO>> searchUsers(String name, String email, String phone, LocalDate dateOfBirth, Pageable pageable) {
+    public PagedModel<EntityModel<UserDto>> searchUsers(String name, String email, String phone, LocalDate dateOfBirth, Pageable pageable) {
 //        Page<User> users = userRepository.searchUsers(name, email, phone, dateOfBirth, pageable);
 
         Specification<User> spec = UserSpecification.withFilters(name, phone, email, dateOfBirth);
         Page<User> users = userRepository.findAll(spec, pageable);
 
-        Page<UserDTO> usersDto = users.map(user -> new UserDTO(
+        Page<UserDto> usersDto = users.map(user -> new UserDto(
                 user.getId(),
                 user.getName(),
                 user.getDateOfBirth(),
+                modelMapper.map(user.getAccount(), AccountDto.class),
                 user.getEmails().stream().map(e -> modelMapper.map(e, EmailDataDto.class)).collect(Collectors.toSet()),
                 user.getPhones().stream().map(p -> modelMapper.map(p, PhoneDataDto.class)).collect(Collectors.toSet())
         ));
